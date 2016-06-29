@@ -5,7 +5,7 @@ end
 
 class RulersAppTest < Test::Unit::TestCase
   include Rack::Test::Methods
-
+  
   def app
     TestApp.new
   end
