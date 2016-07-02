@@ -11,7 +11,16 @@ module Rulers
 
       klass, act = get_controller_and_action(env)
       controller = klass.new(env)
-      text = controller.send(act)
+
+      begin
+        text = controller.send(act)
+      rescue
+        [
+          500,
+          {'Cpmtemt-Type' => 'text/html'},
+          ["This is 500 error page. Sorry, we will fix it soon."]
+        ]
+      end
 
       [
         200,

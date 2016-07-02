@@ -17,4 +17,10 @@ class RulersAppTest < Test::Unit::TestCase
     body = last_response.body
     assert body["Hello"]
   end
+
+  def test_favicon
+    get "/favicon.ico"
+
+    assert last_response.not_found?
+  end
 end
