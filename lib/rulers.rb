@@ -9,11 +9,23 @@ module Rulers
         return [404, {'Content-Type' => 'text/html'}, []]
       end
 
+      if env['PATH_INFO'] == '/'
+        return [200,
+          {'Content-Type' => 'text/html'},
+          [File.read("public/index.html")]
+          ]
+      end
+
       klass, act = get_controller_and_action(env)
       controller = klass.new(env)
 
       begin
         text = controller.send(act)
+        [
+          200,
+          {'Content-Type' => 'text/html'},
+          [text]
+        ]
       rescue
         [
           500,
@@ -21,12 +33,6 @@ module Rulers
           ["This is 500 error page. Sorry, we will fix it soon."]
         ]
       end
-
-      [
-        200,
-        {'Content-Type' => 'text/html'},
-        [text]
-      ]
     end
   end
 
