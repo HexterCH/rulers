@@ -3,6 +3,7 @@ require "rulers/array"
 require "rulers/routing"
 require "rulers/util"
 require "rulers/dependencies"
+require "rulers/controller"
 
 module Rulers
   class Application
@@ -35,16 +36,6 @@ module Rulers
           ["This is 500 error page. Sorry, we will fix it soon."]
         ]
       end
-    end
-  end
-
-  class Controller
-    def initialize(env)
-      @env = env
-    end
-
-    def env
-      @env
     end
   end
 end
