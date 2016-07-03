@@ -8,6 +8,8 @@ require "rulers/controller"
 module Rulers
   class Application
     def call(env)
+      @start_time = Time.now
+
       if env['PATH_INFO'] == '/favicon.ico'
         return [404, {'Content-Type' => 'text/html'}, []]
       end
