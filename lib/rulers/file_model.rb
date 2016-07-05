@@ -51,6 +51,17 @@ module Rulers
 
         FileModel.new "db/quotes/#{id}.json"
       end
+
+      def save
+        hash = {}
+        hash["submitter"] = @hash["submitter"]
+        hash["quote"] = @hash["quote"]
+        hash["attribution"] = @hash["attribution"]
+
+        File.open(@filename, "w") do |f|
+          f.write MultiJson.dump hash
+        end
+      end
     end
   end
 end
