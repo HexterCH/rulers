@@ -1,5 +1,6 @@
 require "multi_json"
 require "pry"
+
 module Rulers
   module Model
     class FileModel
@@ -65,6 +66,13 @@ module Rulers
           m
         rescue
           return nil
+        end
+      end
+
+      def self.method_missing(method, *args)
+        if method.to_s(0..11) == "find_all_by_"
+          attrib = method.to_s[12..-1]
+          return find_all_by_attrib attrib, args[0]
         end
       end
 
