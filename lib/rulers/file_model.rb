@@ -52,6 +52,36 @@ module Rulers
         FileModel.new "db/quotes/#{id}.json"
       end
 
+      def self.find(id)
+        id = id.to_i
+        @dm_style_cache ||= {}
+
+        begin
+          if @dm_style_cache[id]
+            return @dm_style_cache[id]
+          end
+          m = FileModel.new("db/quotes/#{id}.json")
+          @dm_style_cache[id] = m
+          m
+        rescue
+          return nil
+        end
+      end
+
+      def self.find_all_by_attrib(attrib, value)
+        id = 1
+        results = []
+
+        loop do
+          m = FileModel.find(id)
+          return results unless m
+
+          results.push(m) if m[attrib] == value
+
+          id += 1
+        end
+      end
+
       def save
         hash = {}
         hash["submitter"] = @hash["submitter"]
