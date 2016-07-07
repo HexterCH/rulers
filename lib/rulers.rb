@@ -27,11 +27,21 @@ module Rulers
 
       begin
         text = controller.send(act)
-        [
-          200,
-          {'Content-Type' => 'text/html'},
-          [text]
-        ]
+        r = controller.get_response
+
+        if r
+          [
+            r.status,
+            r.headers,
+            [r.body].flatten
+          ]
+        else
+          [
+            200,
+            {'Content-Type' => 'text/html'},
+            [text]
+          ]
+        end
       rescue
         [
           500,

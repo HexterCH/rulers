@@ -38,6 +38,20 @@ module Rulers
       request.params
     end
 
+    def response(text, status = 200, headers = {})
+      raise "Already responded!" if @response
+      a = [text].flatten
+      @response = Rack::Response.new(a, status, headers)
+    end
+
+    def get_response
+      @response
+    end
+
+    def render_response(*args)
+      response(render(*args))
+    end
+
     def controller_name
       klass = self.class
       klass = klass.to_s.gsub(/Controller$/, "")
