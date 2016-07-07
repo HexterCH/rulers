@@ -1,5 +1,6 @@
 require "rulers/file_model"
 require "erubis"
+require "rack/request"
 
 module Rulers
   class Controller
@@ -27,6 +28,14 @@ module Rulers
         vars[name[1..-1]] = instance_variable_get name.to_sym
       end
       vars
+    end
+
+    def request
+      @request ||= Rack::Request.new(@env)
+    end
+
+    def params
+      request.params
     end
 
     def controller_name
