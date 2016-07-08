@@ -48,9 +48,8 @@ module Rulers
       @response
     end
 
-    def render_response(*args)
-      binding.pry
-      response(render(*args))
+    def render(*args)
+      response(render_template(*args))
     end
 
     def controller_name
@@ -59,7 +58,7 @@ module Rulers
       Rulers.to_underscore klass
     end
 
-    def render(view_name, locals = instance_vars)
+    def render_template(view_name, locals = instance_vars)
       filename = File.join "app", "views", controller_name, "#{view_name}.html.erb"
       template = File.read filename
       eruby = Erubis::Eruby.new(template)

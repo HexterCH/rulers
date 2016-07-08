@@ -5,6 +5,7 @@ require "rulers/util"
 require "rulers/dependencies"
 require "rulers/controller"
 require "rulers/file_model"
+require "pry"
 
 module Rulers
   class Application
@@ -26,22 +27,19 @@ module Rulers
       controller = klass.new(env)
 
       begin
-        text = controller.send(act)
-        r = controller.get_response
+        controller.send(act)
 
-        if r
-          [
-            r.status,
-            r.headers,
-            [r.body].flatten
-          ]
-        else
-          [
-            200,
-            {'Content-Type' => 'text/html'},
-            [text]
-          ]
+        response = controller.get_response
+
+        unless response
+          controller.render(act)
         end
+
+        [
+          response.status,
+          response.headers,
+          [response.body].flatten
+        ]
       rescue
         [
           500,
