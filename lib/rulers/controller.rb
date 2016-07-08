@@ -49,6 +49,7 @@ module Rulers
     end
 
     def render_response(*args)
+      binding.pry
       response(render(*args))
     end
 
