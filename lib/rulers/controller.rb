@@ -1,6 +1,7 @@
 require "rulers/file_model"
 require "erubis"
 require "rack/request"
+require "rulers/view"
 
 module Rulers
   class Controller
@@ -61,8 +62,17 @@ module Rulers
     def render_template(view_name, locals = instance_vars)
       filename = File.join "app", "views", controller_name, "#{view_name}.html.erb"
       template = File.read filename
-      eruby = Erubis::Eruby.new(template)
-      eruby.result locals.merge(:env => env)
+      v = View.new
+      v.set_vars instance_hash
+      v.evaluate template
+    end
+
+    def instance_hash
+      h = {}
+      instance_variables.each do |i|
+        h[i] = instance_variable_get i
+      end
+      h
     end
   end
 end
