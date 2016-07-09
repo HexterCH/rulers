@@ -6,7 +6,7 @@ end
 
 STDERR.puts MyTable.schema.inspect
 
-# Create now
+# Create row
 mt = MyTable.create "title" => "It happened!", "posted" => 1, "body" => "It did!"
 mt = MyTable.create "title" => "I saw it!"
 
@@ -17,3 +17,13 @@ top_id = mt["id"].to_i
   mt_id = MyTable.find(id)
   puts "Found title #{mt_id["title"]}."
 end
+
+mt2 = MyTable.find mt["id"]
+
+puts "Title: #{mt2["title"]}"
+
+mt = MyTable.create "title" => "I saw it again!", "posted" => 1, "body" => "It did!"
+mt["title"] = "I really did!"
+mt.save!
+
+puts mt["title"]
