@@ -11,6 +11,38 @@ module Rulers
         @hash = data
       end
 
+      def [](name)
+        @hash[name.to_s]
+      end
+
+      def []=(name, value)
+        @hash[name.to_s] = value
+      end
+
+      def method_missing(name, *args)
+        binding.pry
+        if @hash[name.to_s]
+          self.class.class_eval do
+            define_method(name) do
+              self[name]
+            end
+          end
+          return self.send(name)
+        end
+
+        if name.to_s[-1..-1] == "="
+          col_name = name.to_s[0..-2]
+          self.class.class_eval do
+            define_method(name) do |value|
+              self[col_name] = value
+            end
+          end
+          return self.send(name, args[0])
+        end
+
+        super
+      end
+
       def save!
         unless @hash["id"]
           self.class.create
@@ -72,14 +104,6 @@ SQL
         self.new data
       end
 
-      def [](name)
-        @hash[name.to_s]
-      end
-
-      def []=(name, value)
-        @hash[name.to_s] = value
-      end
-
       def self.count
         DB.execute(<<SQL)[0][0]
           SELECT COUNT(*) FROM #{table}
@@ -96,16 +120,6 @@ SQL
         DB.table_info(table) do |row|
           @schema[row["name"]] = row["type"]
         end
-
-        @schema.each do |name, type|
-          define_method(name) do
-            self[name]
-          end
-          define_method("#{name}+") do |value|
-            self[name] = value
-          end
-        end
-
         @schema
       end
     end
