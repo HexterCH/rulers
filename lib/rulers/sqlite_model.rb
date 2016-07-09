@@ -96,6 +96,16 @@ SQL
         DB.table_info(table) do |row|
           @schema[row["name"]] = row["type"]
         end
+
+        @schema.each do |name, type|
+          define_method(name) do
+            self[name]
+          end
+          define_method("#{name}+") do |value|
+            self[name] = value
+          end
+        end
+
         @schema
       end
     end

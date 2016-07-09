@@ -27,3 +27,7 @@ mt["title"] = "I really did!"
 mt.save!
 
 puts mt["title"]
+
+mt2 = MyTable.find mt.id
+puts "Title.find my.id"
+puts "Title: #{mt2.title}"
