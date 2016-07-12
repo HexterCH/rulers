@@ -9,6 +9,40 @@ module Rulers
 
     def initialize(env)
       @env = env
+      @routing_params = {}
+    end
+
+    def dispatch(action, routing_params = {})
+      begin
+        @routing_params = routing_params
+
+        text = self.send(action)
+        response = get_response
+
+        if response
+          [
+            response.status,
+            response.headers,
+            [response.body].flatten
+          ]
+        else
+          [
+            200,
+            {'Cpmtemt-Type' => 'text/html'},
+            [text].flatten
+          ]
+        end
+      rescue
+        [
+          500,
+          {'Cpmtemt-Type' => 'text/html'},
+          ["This is 500 error page. Sorry, we will fix it soon."]
+        ]
+      end
+    end
+
+    def self.action(act, rp = {})
+      proc { |e| self.new(e).dispatch(act, rp) }
     end
 
     def env
@@ -36,7 +70,7 @@ module Rulers
     end
 
     def params
-      request.params
+      request.params.merge(@routing_params)
     end
 
     def response(text, status = 200, headers = {})

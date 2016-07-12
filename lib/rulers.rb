@@ -18,36 +18,15 @@ module Rulers
       end
 
       if env['PATH_INFO'] == '/'
-        return [200,
+        return [
+          200,
           {'Content-Type' => 'text/html'},
           [File.read("public/index.html")]
-          ]
-      end
-
-      klass, act = get_controller_and_action(env)
-      controller = klass.new(env)
-
-      begin
-        controller.send(act)
-
-        response = controller.get_response
-
-        unless response
-          controller.render(act)
-        end
-
-        [
-          response.status,
-          response.headers,
-          [response.body].flatten
-        ]
-      rescue
-        [
-          500,
-          {'Cpmtemt-Type' => 'text/html'},
-          ["This is 500 error page. Sorry, we will fix it soon."]
         ]
       end
+
+      rack_app = get_rack_app(env)
+      rack_app.call(env)
     end
   end
 end
