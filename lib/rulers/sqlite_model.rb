@@ -20,7 +20,6 @@ module Rulers
       end
 
       def method_missing(name, *args)
-        binding.pry
         if @hash[name.to_s]
           self.class.class_eval do
             define_method(name) do

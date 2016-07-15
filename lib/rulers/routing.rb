@@ -1,3 +1,5 @@
+require "pry"
+
 class RouteObject
   def initialize
     @rules = []
@@ -33,7 +35,7 @@ class RouteObject
       :regexp => Regexp.new("^/#{regexp}$"),
       :vars => vars,
       :dest => dest,
-      :options => options
+      :options => options,
     })
   end
 
@@ -44,9 +46,11 @@ class RouteObject
       if m
         options = r[:options]
         params = options[:default].dup
+
         r[:vars].each_with_index do |v, i|
           params[v] = m.captures[i]
         end
+
         dest = nil
         if r[:dest]
           return get_dest(r[:dest], params)
