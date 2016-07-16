@@ -5,6 +5,10 @@ class RouteObject
     @rules = []
   end
 
+  def root(*args)
+    match("", *args)
+  end
+
   def match(url, *args)
     options = {}
     options = args.pop if args[-1].is_a?(Hash)
