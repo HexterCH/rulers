@@ -17,14 +17,6 @@ module Rulers
         return [404, {'Content-Type' => 'text/html'}, []]
       end
 
-      if env['PATH_INFO'] == '/'
-        return [
-          200,
-          {'Content-Type' => 'text/html'},
-          [File.read("public/index.html")]
-        ]
-      end
-
       rack_app = get_rack_app(env)
       rack_app.call(env)
     end
