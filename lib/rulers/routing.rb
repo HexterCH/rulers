@@ -8,6 +8,7 @@ class RouteObject
         :regexp => /^\/([a-zA-Z0-9]+)$/,
         :vars => ["controller"],
         :dest => nil,
+        :via => false,
         :options => {
           :default => {
             "action" => "index"
@@ -30,7 +31,7 @@ class RouteObject
     dest = args.pop if args.size > 0
     raise "Too many args!" if args.size > 0
 
-    parts = url.split("/")
+    parts = url.split /(\/|\(|\)|\?|\.)/
     parts.select! { |p| !p.empty? }
 
     vars = []
@@ -41,6 +42,8 @@ class RouteObject
       elsif part[0] == "*"
         vars << part[1..-1]
         "(.*)"
+      elsif part[0] == "."
+        "\\."
       else
         part
       end
@@ -51,12 +54,14 @@ class RouteObject
       :regexp => Regexp.new("^/#{regexp}$"),
       :vars => vars,
       :dest => dest,
+      :via => options[:via] ? options[:via].downcase : false,
       :options => options,
     })
   end
 
-  def check_url(url)
+  def check_url(url, verb)
     (@rules + @default_rules).each do |r|
+      next if r[:via] && r[:via] != verb.downcae
       m = r[:regexp].match(url)
 
       if m
@@ -101,7 +106,7 @@ module Rulers
 
     def get_rack_app(env)
       raise "No routes!" unless @route_obj
-      @route_obj.check_url env["PATH_INFO"]
+      @route_obj.check_url env["PATH_INFO"], env["REQUEST_METHOD"]
     end
   end
 end
