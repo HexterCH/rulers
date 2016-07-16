@@ -3,6 +3,18 @@ require "pry"
 class RouteObject
   def initialize
     @rules = []
+    @default_rules = [
+      {
+        :regexp => /^\/([a-zA-Z0-9]+)$/,
+        :vars => ["controller"],
+        :dest => nil,
+        :options => {
+          :default => {
+            "action" => "index"
+          }
+        }
+      }
+    ]
   end
 
   def root(*args)
@@ -44,7 +56,7 @@ class RouteObject
   end
 
   def check_url(url)
-    @rules.each do |r|
+    (@rules + @default_rules).each do |r|
       m = r[:regexp].match(url)
 
       if m
